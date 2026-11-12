@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="fr" dir="ltr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Un cadeau spécial pour toi ✨</title>
+    <style>
+        body {
+            background: linear-gradient(135deg, #fce4ec, #f8bbd0);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            text-align: center;
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            overflow: hidden;
+            position: relative;
+        }
+
+        /* تنسيق القلوب والورود المتحركة في الخلفية */
+        .falling-flower {
+            position: absolute;
+            top: -10vh;
+            font-size: 24px;
+            user-select: none;
+            z-index: 1;
+            animation: fall linear infinite;
+        }
+
+        @keyframes fall {
+            0% {
+                transform: translateY(-10vh) rotate(0deg);
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(110vh) rotate(360deg);
+                opacity: 0.2;
+            }
+        }
+
+        .card {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 30px;
+            border-radius: 25px;
+            box-shadow: 0 15px 35px rgba(216, 27, 96, 0.2);
+            max-width: 400px;
+            width: 90%;
+            border: 2px dashed #f48fb1;
+            box-sizing: border-box;
+            z-index: 10; /* لجعل البطاقة فوق الورد المتحرك */
+        }
+        h2 {
+            color: #d81b60;
+            margin-bottom: 10px;
+        }
+        p {
+            color: #888;
+            font-size: 14px;
+            margin-bottom: 20px;
+        }
+        /* Écran de verrouillage et code PIN */
+        .pin-display {
+            font-size: 26px;
+            letter-spacing: 12px;
+            margin-bottom: 20px;
+            color: #d81b60;
+            min-height: 35px;
+            font-weight: bold;
+        }
+        .keypad {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px;
+            max-width: 280px;
+            margin: 0 auto;
+        }
+        .key {
+            background: #fce4ec;
+            border: none;
+            padding: 15px;
+            font-size: 18px;
+            font-weight: bold;
+            border-radius: 50%;
+            cursor: pointer;
+            color: #ad1457;
+            transition: 0.2s;
+            width: 55px;
+            height: 55px;
+            margin: auto;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .key:hover {
+            background: #f48fb1;
+            color: white;
+            transform: scale(1.05);
+        }
+        
+        /* Section des cadeaux masquée */
+        #giftSection {
+            display: none;
+            animation: fadeIn 0.5s ease-in-out;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .gift-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            margin-top: 20px;
+        }
+        .gift-box-item {
+            background: #fce4ec;
+            padding: 15px 10px;
+            border-radius: 12px;
+            cursor: pointer;
+            border: 1px solid #f48fb1;
+            font-size: 24px;
+            transition: 0.2s;
+        }
+        .gift-box-item:hover {
+            background: #f8bbd0;
+            transform: scale(1.05);
+        }
+        /* Fenêtre d'affichage du contenu du cadeau */
+        #modalContent {
+            display: none;
+            margin-top: 20px;
+            background: #fff0f5;
+            padding: 15px;
+            border-radius: 12px;
+            border: 1px solid #ffc0cb;
+            color: #880e4f;
+            font-size: 15px;
+        }
+        .back-btn {
+            background: #d81b60;
+            color: white;
+            border: none;
+            padding: 8px 20px;
+            border-radius: 10px;
+            cursor: pointer;
+            margin-top: 20px;
+            font-weight: bold;
+        }
+        .back-btn:hover {
+            background: #ad1457;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- حاوية الورود والقلوب المتحركة -->
+    <div id="flowers-container"></div>
+
+    <div class="card">
+        <!-- Section du code PIN -->
+        <div id="lockSection">
+            <h2>Entrer le code secret 🔒</h2>
+            <p>Entre le chiffre spécial entre nous </p>
+            <div class="pin-display" id="pinDisplay">_ _ _ _</div>
+            
+            <div class="keypad">
+                <button class="key" onclick="press('1')">1</button>
+                <button class="key" onclick="press('2')">2</button>
+                <button class="key" onclick="press('3')">3</button>
+                <button class="key" onclick="press('4')">4</button>
+                <button class="key" onclick="press('5')">5</button>
+                <button class="key" onclick="press('6')">6</button>
+                <button class="key" onclick="press('7')">7</button>
+                <button class="key" onclick="press('8')">8</button>
+                <button class="key" onclick="press('9')">9</button>
+                <button class="key" onclick="clearPin()" style="font-size: 12px;">Effacer</button>
+                <button class="key" onclick="press('0')">0</button>
+                <button class="key" style="visibility: hidden;"></button>
+            </div>
+        </div>
+
+        <!-- Section principale des cadeaux -->
+        <div id="giftSection">
+            <h2>Cadeau déverrouillé avec succès ! 🎉</h2>
+            <p>Choisis une boîte pour découvrir la surprise :</p>
+            
+            <div class="gift-grid">
+                <div class="gift-box-item" onclick="openGift(1)">🎁</div>
+                <div class="gift-box-item" onclick="openGift(2)">💌</div>
+                <div class="gift-box-item" onclick="openGift(3)">🎵</div>
+            </div>
+
+            <div id="modalContent">
+                <p id="modalText">Choisis une boîte ci-dessus pour voir son contenu...</p>
+            </div>
+
+            <button class="back-btn" onclick="lockAgain()">Verrouiller</button>
+        </div>
+    </div>
+
+    <script>
+        // كود JavaScript لتوليد قلوب وورود متساقطة عشوائياً في الخلفية
+        const symbols = ['🌸', '💐', '💕', '💖', '🌷', '✨'];
+        const container = document.getElementById('flowers-container');
+
+        function createFallingSymbol() {
+            const el = document.createElement('div');
+            el.classList.add('falling-flower');
+            el.innerText = symbols[Math.floor(Math.random() * symbols.length)];
+            
+            // مواقع عشوائية وأحجام وسرعة مختلفة
+            el.style.left = Math.random() * 100 + 'vw';
+            el.style.animationDuration = (Math.random() * 3 + 4) + 's'; // بين 4 و 7 ثواني
+            el.style.fontSize = (Math.random() * 15 + 18) + 'px';
+            
+            container.appendChild(el);
+
+            // حذف العنصر بعد انتهاء الحركة لعدم إبطاء الصفحة
+            setTimeout(() => {
+                el.remove();
+            }, 7000);
+        }
+
+        // توليد رمز جديد كل 300 جزء من المائة من الثانية
+        setInterval(createFallingSymbol, 300);
+
+        // أكواد النظام وتفاعل الرمز السري والهدايا
+        const correctPin = "0000"; 
+        let currentInput = "";
+
+        function press(num) {
+            if (currentInput.length < 4) {
+                currentInput += num;
+                updateDisplay();
+                if (currentInput.length === 4) {
+                    setTimeout(checkPin, 200);
+                }
+            }
+        }
+
+        function updateDisplay() {
+            let displayStr = "";
+            for (let i = 0; i < 4; i++) {
+                displayStr += i < currentInput.length ? "❤️ " : "_ ";
+            }
+            document.getElementById("pinDisplay").innerText = displayStr;
+        }
+
+        function checkPin() {
+            if (currentInput === correctPin) {
+                document.getElementById("lockSection").style.display = "none";
+                document.getElementById("giftSection").style.display = "block";
+            } else {
+                alert("Code incorrect, réessaie !");
+                clearPin();
+            }
+        }
+
+        function clearPin() {
+            currentInput = "";
+            updateDisplay();
+        }
+
+        function lockAgain() {
+            currentInput = "";
+            updateDisplay();
+            document.getElementById("giftSection").style.display = "none";
+            document.getElementById("lockSection").style.display = "block";
+            document.getElementById("modalContent").style.display = "none";
+        }
+
+        function openGift(boxNumber) {
+            const modal = document.getElementById("modalContent");
+            const text = document.getElementById("modalText");
+            modal.style.display = "block";
+
+            if (boxNumber === 1) {
+                text.innerHTML = "<b>Première boîte :</b> Merci d'être une personne formidable et si spéciale dans ma vie, ta présence fait toute la différence !";
+            } else if (boxNumber === 2) {
+                text.innerHTML = "<b>Message spécial :</b> Rappelle-toi toujours que j'apprécie notre amitié et ton soutien constant en toutes circonstances.";
+            } else if (boxNumber === 3) {
+                text.innerHTML = "<b>Chanson favorite :</b> (Tu peux mettre ici un lien vers une musique ou une vidéo YouTube qui vous rappelle un bon souvenir 🎶)";
+            }
+        }
+    </script>
+
+</body>
+</html>
